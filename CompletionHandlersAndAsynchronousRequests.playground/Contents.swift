@@ -6,7 +6,12 @@ import XCPlayground
 class ViewController : UIViewController {
     
     // Views that need to be accessible to all methods
-    let jsonResult = UILabel()
+    let boys2to3 = UILabel()
+    let boys4to8 = UILabel()
+    let boys9to13 = UILabel()
+    let girls2to3 = UILabel()
+    let girls4to8 = UILabel()
+    let girls9to13 = UILabel()
     
     // If data is successfully retrieved from the server, we can parse it here
     func parseMyJSON(theData : NSData) {
@@ -28,16 +33,57 @@ class ViewController : UIViewController {
             // Print retrieved JSON
             print("")
             print("====== the retrieved JSON is as follows ======")
-            print(json)
+            //print(json)
             
             // Now we can parse this...
             print("")
             print("Now, add your parsing code here...")
             
+            // Now we will get the top level dictionary
+            guard let topLevelDictionary : [ String : AnyObject ] = json as? [ String : AnyObject] else {
+                
+                print("Could not create top level dictionary")
+                return
+                
+            }
+            
+            // Now print out the contents of this dictionary
+            print("======")
+            print("The top level dictionary value for the key 'servings to per to miy'")
+            print(topLevelDictionary["servings to per to miy"])
+            
+            // Now get an array of servings information
+            guard let servingsInfo : [AnyObject] = topLevelDictionary["servings to per to miy"] as? [ AnyObject ] else {
+                print("Could not create array")
+                return
+            }
+            // Now print out the contents of this dictionary
+            print("======")
+            print("The first value in the array is")
+            print(servingsInfo[0])
+            
+            // Get the servings data for the first element in the array
+            guard let girls2to3Data : [ String : String ] = servingsInfo[0] as? [ String : String] else {
+                print("Could not get girls 2 to 3 servings dictionary")
+                return
+            }
+            
+            // Get the actual servings value
+            guard let girls2to3Servings : String = girls2to3Data["servings"]! as String else {
+                print("Could not get servings value for girls 2 to 3")
+                return
+            }
+
+            // Now print out the contents of this dictionary
+            print("======")
+            print("The second value in the array is")
+            print(servingsInfo[1])
+            
+            
             // Now we can update the UI
             // (must be done asynchronously)
             dispatch_async(dispatch_get_main_queue()) {
-                self.jsonResult.text = "parsed JSON should go here"
+                self.girls2to3.text = "2 to 3: \(girls2to3Servings)"
             }
             
         } catch let error as NSError {
@@ -49,79 +95,13 @@ class ViewController : UIViewController {
     
     // Set up and begin an asynchronous request for JSON data
     func getMyJSON() {
+        
+        let filePath = NSBundle.mainBundle().pathForResource("servings_per_day-en", ofType: "json")
+        let contentData = NSFileManager.defaultManager().contentsAtPath(filePath!)
+        
+        parseMyJSON(contentData!)
 
-        // Define a completion handler
-        // The completion handler is what gets called when this **asynchronous** network request is completed.
-        // This is where we'd process the JSON retrieved
-        let myCompletionHandler : (NSData?, NSURLResponse?, NSError?) -> Void = {
-            
-            (data, response, error) in
-            
-            // This is the code run when the network request completes
-            // When the request completes:
-            //
-            // data - contains the data from the request
-            // response - contains the HTTP response code(s)
-            // error - contains any error messages, if applicable
-            
-            // Cast the NSURLResponse object into an NSHTTPURLResponse objecct
-            if let r = response as? NSHTTPURLResponse {
-                
-                // If the request was successful, parse the given data
-                if r.statusCode == 200 {
-        
-                    // Show debug information (if a request was completed successfully)            
-                    print("")
-                    print("====== data from the request follows ======")
-                    print(data)
-                    print("")
-                    print("====== response codes from the request follows ======")
-                    print(response)
-                    print("")
-                    print("====== errors from the request follows ======")
-                    print(error)
-            
-                    if let d = data {
-                        
-                        // Parse the retrieved data
-                        self.parseMyJSON(d)
-                        
-                    }
-                    
-                }
-                
-            }
-            
-        }
-        
-        // Define a URL to retrieve a JSON file from
-        let address : String = "http://www.learnswiftonline.com/Samples/subway.json"
-        
-        // Try to make a URL request object
-        if let url = NSURL(string: address) {
-            
-            // We have an valid URL to work with
-            print(url)
-            
-            // Now we create a URL request object
-            let urlRequest = NSURLRequest(URL: url)
-            
-            // Now we need to create an NSURLSession object to send the request to the server
-            let config = NSURLSessionConfiguration.defaultSessionConfiguration()
-            let session = NSURLSession(configuration: config)
-            
-            // Now we create the data task and specify the completion handler
-            let task = session.dataTaskWithRequest(urlRequest, completionHandler: myCompletionHandler)
-            
-            // Finally, we tell the task to start (despite the fact that the method is named "resume")
-            task.resume()
-            
-        } else {
-            
-            // The NSURL object could not be created
-            print("Error: Cannot create the NSURL object.")
-            
-        }
+
         
     }
     
@@ -139,19 +119,133 @@ class ViewController : UIViewController {
          * Further define label that will show JSON data
          */
         
+        let programTitle = UILabel()
+        
         // Set the label text and appearance
-        jsonResult.text = "..."
-        jsonResult.font = UIFont.systemFontOfSize(12)
-        jsonResult.numberOfLines = 0   // makes number of lines dynamic
+        programTitle.text = "Fruits & Veggies"
+        programTitle.font = UIFont.systemFontOfSize(24)
+        programTitle.textColor = UIColor.whiteColor()
+        programTitle.numberOfLines = 0   // makes number of lines dynamic
         // e.g.: multiple lines will show up
-        jsonResult.textAlignment = NSTextAlignment.Center
+        programTitle.textAlignment = NSTextAlignment.Center
         
         // Required to autolayout this label
-        jsonResult.translatesAutoresizingMaskIntoConstraints = false
+        programTitle.translatesAutoresizingMaskIntoConstraints = false
         
         // Add the label to the superview
-        view.addSubview(jsonResult)
+        view.addSubview(programTitle)
+        
+        let boysTitle = UILabel()
+        
+        // Set the label text and appearance
+        boysTitle.text = "Boys"
+        boysTitle.font = UIFont.systemFontOfSize(18)
+        boysTitle.textColor = UIColor.whiteColor()
+        boysTitle.numberOfLines = 0   // makes number of lines dynamic
+        // e.g.: multiple lines will show up
+        boysTitle.textAlignment = NSTextAlignment.Center
+        
+        // Required to autolayout this label
+        boysTitle.translatesAutoresizingMaskIntoConstraints = false
+        
+        // Add the label to the superview
+        view.addSubview(boysTitle)
+        
+        let girlsTitle = UILabel()
+        
+        // Set the label text and appearance
+        girlsTitle.text = "Girls"
+        girlsTitle.font = UIFont.systemFontOfSize(18)
+        girlsTitle.textColor = UIColor.whiteColor()
+        girlsTitle.numberOfLines = 0   // makes number of lines dynamic
+        // e.g.: multiple lines will show up
+        girlsTitle.textAlignment = NSTextAlignment.Center
+        
+        // Required to autolayout this label
+        girlsTitle.translatesAutoresizingMaskIntoConstraints = false
+        
+        // Add the label to the superview
+        view.addSubview(girlsTitle)
+        
+        
+        // Set the label text and appearance
+        boys2to3.text = "2 to 3:"
+        boys2to3.font = UIFont.systemFontOfSize(12)
+        boys2to3.numberOfLines = 0   // makes number of lines dynamic
+        // e.g.: multiple lines will show up
+        boys2to3.textAlignment = NSTextAlignment.Center
+        
+        // Required to autolayout this label
+        boys2to3.translatesAutoresizingMaskIntoConstraints = false
+        
+        // Add the label to the superview
+        view.addSubview(boys2to3)
+        
+        // Set the label text and appearance
+        boys4to8.text = "4 to 8:"
+        boys4to8.font = UIFont.systemFontOfSize(12)
+        boys4to8.numberOfLines = 0   // makes number of lines dynamic
+        // e.g.: multiple lines will show up
+        boys4to8.textAlignment = NSTextAlignment.Center
+        
+        // Required to autolayout this label
+        boys4to8.translatesAutoresizingMaskIntoConstraints = false
+        
+        // Add the label to the superview
+        view.addSubview(boys4to8)
+        
+        // Set the label text and appearance
+        boys9to13.text = "9 to 13:"
+        boys9to13.font = UIFont.systemFontOfSize(12)
+        boys9to13.numberOfLines = 0   // makes number of lines dynamic
+        // e.g.: multiple lines will show up
+        boys9to13.textAlignment = NSTextAlignment.Center
+        
+        // Required to autolayout this label
+        boys9to13.translatesAutoresizingMaskIntoConstraints = false
+        
+        // Add the label to the superview
+        view.addSubview(boys9to13)
 
+        // Set the label text and appearance
+        girls2to3.text = "2 to 3:"
+        girls2to3.font = UIFont.systemFontOfSize(12)
+        girls2to3.numberOfLines = 0   // makes number of lines dynamic
+        // e.g.: multiple lines will show up
+        girls2to3.textAlignment = NSTextAlignment.Center
+        
+        // Required to autolayout this label
+        girls2to3.translatesAutoresizingMaskIntoConstraints = false
+        
+        // Add the label to the superview
+        view.addSubview(girls2to3)
+        
+        // Set the label text and appearance
+        girls4to8.text = "4 to 8:"
+        girls4to8.font = UIFont.systemFontOfSize(12)
+        girls4to8.numberOfLines = 0   // makes number of lines dynamic
+        // e.g.: multiple lines will show up
+        girls4to8.textAlignment = NSTextAlignment.Center
+        
+        // Required to autolayout this label
+        girls4to8.translatesAutoresizingMaskIntoConstraints = false
+        
+        // Add the label to the superview
+        view.addSubview(girls4to8)
+        
+        // Set the label text and appearance
+        girls9to13.text = "9 to 13:"
+        girls9to13.font = UIFont.systemFontOfSize(12)
+        girls9to13.numberOfLines = 0   // makes number of lines dynamic
+        // e.g.: multiple lines will show up
+        girls9to13.textAlignment = NSTextAlignment.Center
+        
+        // Required to autolayout this label
+        girls9to13.translatesAutoresizingMaskIntoConstraints = false
+        
+        // Add the label to the superview
+        view.addSubview(girls9to13)
+        
         /*
          * Add a button
          */
@@ -181,12 +275,20 @@ class ViewController : UIViewController {
         
         // Create a dictionary of views that will be used in the layout constraints defined below
         let viewsDictionary : [String : AnyObject] = [
-            "title": jsonResult,
+            "boys2to3": boys2to3,
+            "boys4to8": boys4to8,
+            "boys9to13": boys9to13,
+            "girls2to3": girls2to3,
+            "girls4to8": girls4to8,
+            "girls9to13": girls9to13,
+            "programTitle": programTitle,
+            "boysTitle": boysTitle,
+            "girlsTitle": girlsTitle,
             "getData": getData]
         
         // Define the vertical constraints
         let verticalConstraints = NSLayoutConstraint.constraintsWithVisualFormat(
-            "V:|-50-[getData]-[title]",
+            "V:|-50-[programTitle]-[boysTitle]-[boys2to3]-[boys4to8]-[boys9to13]-[girlsTitle]-[girls2to3]-[girls4to8]-[girls9to13]-[getData]",
             options: [],
             metrics: nil,
             views: viewsDictionary)
