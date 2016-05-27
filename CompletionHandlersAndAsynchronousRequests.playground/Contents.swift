@@ -62,6 +62,7 @@ class ViewController : UIViewController {
             print("The first value in the array is")
             print(servingsInfo[0])
             
+            //*******
             // Get the servings data for the first element in the array
             guard let girls2to3Data : [ String : String ] = servingsInfo[0] as? [ String : String] else {
                 print("Could not get girls 2 to 3 servings dictionary")
@@ -74,6 +75,62 @@ class ViewController : UIViewController {
                 return
             }
 
+            //*******
+            guard let girls4to8Data : [ String : String ] = servingsInfo[2] as? [ String : String] else {
+                print("Could not get girls 4 to 8 servings dictionary")
+                return
+            }
+
+            guard let girls4to8Servings : String = girls4to8Data["servings"]! as String else {
+                print("Could not get servings value for girls 4 to 8")
+                return
+            }
+            
+            //*******
+            guard let girls9to13Data : [ String : String ] = servingsInfo[4] as? [ String : String] else {
+                print("Could not get girls 9 to 13 servings dictionary")
+                return
+            }
+            
+            guard let girls9to13Servings : String = girls9to13Data["servings"]! as String else {
+                print("Could not get servings value for girls 9 to 13")
+                return
+            }
+            
+            //*******
+            guard let boys2to3Data : [ String : String ] = servingsInfo[1] as? [ String : String] else {
+                print("Could not get boys 2 to 3 servings dictionary")
+                return
+            }
+            
+            guard let boys2to3Servings : String = boys2to3Data["servings"]! as String else {
+                print("Could not get servings value for boys 2 to 3")
+                return
+            }
+            
+            //*******
+            guard let boys4to8Data : [ String : String ] = servingsInfo[3] as? [ String : String] else {
+                print("Could not get boys 4 to 8 servings dictionary")
+                return
+            }
+            
+            guard let boys4to8Servings : String = boys4to8Data["servings"]! as String else {
+                print("Could not get servings value for boys 4 to 8")
+                return
+            }
+            
+            //*******
+            guard let boys9to13Data : [ String : String ] = servingsInfo[5] as? [ String : String] else {
+                print("Could not get boys 9 to 13 servings dictionary")
+                return
+            }
+            
+            guard let boys9to13Servings : String = boys9to13Data["servings"]! as String else {
+                print("Could not get servings value for boys 9 to 13")
+                return
+            }
+            
+            
             // Now print out the contents of this dictionary
             print("======")
             print("The second value in the array is")
@@ -84,6 +141,11 @@ class ViewController : UIViewController {
             // (must be done asynchronously)
             dispatch_async(dispatch_get_main_queue()) {
                 self.girls2to3.text = "2 to 3: \(girls2to3Servings)"
+                self.girls4to8.text = "4 to 8: \(girls4to8Servings)"
+                self.girls9to13.text = "9 to 13: \(girls9to13Servings)"
+                self.boys2to3.text = "2 to 3: \(boys2to3Servings)"
+                self.boys4to8.text = "4 to 8: \(boys4to8Servings)"
+                self.boys9to13.text = "9 to 13: \(boys9to13Servings)"
             }
             
         } catch let error as NSError {
